@@ -1,18 +1,25 @@
 import pygame
 
-from models import Asteroid, Spaceship
-from utils import load_sprite, print_text, random_position
+from asteroid import Asteroid
+from spaceship import Spaceship
+
+from utils import *
+
 
 class Game:
   MIN_DISTANCE = 250
 
   def __init__(self):
     self.init_window()
+
     self.clock = pygame.time.Clock()
+
     self.screen = pygame.display.set_mode((800, 600))
     self.background = load_sprite("space", False)
-    self.font = pygame.font.Font("assets/fonts/PressStart2P.ttf", 40)
+
+    self.font = pygame.font.Font("assets/fonts/press_start.ttf", 40)
     self.message = ""
+    
     self.asteroids = list()
     self.bullets = list()
     self.spaceship = Spaceship((400, 300), self.bullets.append)
@@ -28,7 +35,7 @@ class Game:
 
   def init_window(self):
     pygame.init()
-    pygame.display.set_caption("Asteroids")
+    pygame.display.set_caption('Asteroids')
 
   def handle_input(self):
     for event in pygame.event.get():
@@ -62,7 +69,7 @@ class Game:
       for asteroid in self.asteroids:
         if asteroid.check_collision(self.spaceship):
           self.spaceship = None
-          self.message = "GAME OVER ;-;"
+          self.message = 'GAME OVER ;-;'
           break
     
     for bullet in self.bullets.copy():
@@ -78,7 +85,7 @@ class Game:
         self.bullets.remove(bullet)
 
     if self.spaceship and not self.asteroids:
-      self.message = "VICTORY :)"
+      self.message = 'VICTORY :)'
 
   def draw(self):
     self.screen.blit(self.background, (0, 0))
