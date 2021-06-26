@@ -9,7 +9,7 @@ class Asteroid(GameObject):
   def __init__(self, position, asteroid_callback, size=3):
 
     scale = 0.5 ** (3 - size)
-    sprite = rotozoom(load_sprite('asteroid'), 0, scale)
+    sprite = rotozoom(load_sprite('asteroid-64x'), 0, scale)
 
     super().__init__(position, sprite, random_velocity(1, 3))
 

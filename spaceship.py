@@ -13,7 +13,7 @@ class Spaceship(GameObject):
   BULLET_SPEED = ROTATION = 3
 
   def __init__(self, position, bullet_callback):
-    super().__init__(position, load_sprite("spaceship"), Vector2(0))
+    super().__init__(position, load_sprite("ship-sprite"), Vector2(0))
 
     self.direction = Vector2(Vector2(0, -1))
 
