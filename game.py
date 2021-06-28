@@ -2,6 +2,7 @@ import pygame
 
 from asteroid import Asteroid
 from spaceship import Spaceship
+from alien import Alien
 
 from utils import *
 
@@ -23,7 +24,10 @@ class Game:
 
         self.asteroids = list()
         self.bullets = list()
-        self.spaceship = Spaceship((400, 300), self.bullets.append)
+        self.spaceship = Spaceship((399, 299), self.bullets.append)
+
+        self.alien_bullets = list()
+        self.alien = Alien((0, 400), self.alien_bullets.append, self.spaceship)
 
         self.is_in_game = True
 
@@ -49,7 +53,10 @@ class Game:
 
         self.asteroids = list()
         self.bullets = list()
-        self.spaceship = Spaceship((400, 300), self.bullets.append)
+        self.spaceship = Spaceship((399, 299), self.bullets.append)
+
+        self.alien_bullets = list()
+        self.alien = Alien((200, 100), self.alien_bullets.append, self.spaceship)
 
         self.is_in_game = True
 
@@ -111,6 +118,12 @@ class Game:
                     file.close()
                     break
 
+        if self.alien:
+            for asteroid in self.asteroids:
+                if asteroid.check_collision(self.alien):
+                    self.alien = None
+                    break
+
         for bullet in self.bullets.copy():
             for asteroid in self.asteroids.copy():
                 if asteroid.check_collision(bullet):
@@ -129,9 +142,46 @@ class Game:
                     asteroid.split()
                     break
 
+
         for bullet in self.bullets.copy():
             if not self.screen.get_rect().collidepoint(bullet.position):
                 self.bullets.remove(bullet)
+
+
+        for bullet in self.alien_bullets.copy():
+            for asteroid in self.asteroids.copy():
+                if asteroid.check_collision(bullet):
+                    if asteroid.size == 1:
+                        sound_obj = pygame.mixer.Sound('assets/sounds/bangSmall.wav')
+                        sound_obj.play()
+                    elif asteroid.size == 2:
+                        sound_obj = pygame.mixer.Sound('assets/sounds/bangMedium.wav')
+                        sound_obj.play()
+                    elif asteroid.size == 3:
+                        sound_obj = pygame.mixer.Sound('assets/sounds/bangLarge.wav')
+                        sound_obj.play()
+                    self.score += 10 * (4 - asteroid.size)
+                    self.asteroids.remove(asteroid)
+                    self.alien_bullets.remove(bullet)
+                    asteroid.split()
+                    break
+
+                try:
+                    if bullet.check_collision(self.spaceship):
+                        self.spaceship = None
+                        self.message = "GAME OVER"
+                        self.is_in_game = False
+                        file = open("scores.txt", "a")
+                        file.write("%d\n" % self.score)
+                        file.close()
+                        break
+                except:
+                    print("")
+
+
+        for bullet in self.alien_bullets.copy():
+            if not self.screen.get_rect().collidepoint(bullet.position):
+                self.alien_bullets.remove(bullet)
 
         if self.spaceship and not self.asteroids:
             self.message = "VICTORY"
@@ -152,10 +202,12 @@ class Game:
         self.clock.tick(60)
 
     def get_game_objects(self):
-        game_objects = [*self.asteroids, *self.bullets]
+        game_objects = [*self.asteroids, *self.bullets, *self.alien_bullets]
 
         if self.spaceship:
             game_objects.append(self.spaceship)
+        if self.alien:
+            game_objects.append(self.alien)
 
         return game_objects
 
