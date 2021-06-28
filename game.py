@@ -19,6 +19,7 @@ class Game:
 
         self.font = pygame.font.Font("assets/fonts/press_start.ttf", 40)
         self.message = ""
+        self.score = 0
 
         self.asteroids = list()
         self.bullets = list()
@@ -103,8 +104,11 @@ class Game:
             for asteroid in self.asteroids:
                 if asteroid.check_collision(self.spaceship):
                     self.spaceship = None
-                    self.message = 'GAME OVER ;-;'
+                    self.message = "GAME OVER"
                     self.is_in_game = False
+                    file = open("scores.txt", "a")
+                    file.write("%d\n" % self.score)
+                    file.close()
                     break
 
         for bullet in self.bullets.copy():
@@ -119,6 +123,7 @@ class Game:
                     elif asteroid.size == 3:
                         sound_obj = pygame.mixer.Sound('assets/sounds/bangLarge.wav')
                         sound_obj.play()
+                    self.score += 10 * (4 - asteroid.size)
                     self.asteroids.remove(asteroid)
                     self.bullets.remove(bullet)
                     asteroid.split()
@@ -129,7 +134,7 @@ class Game:
                 self.bullets.remove(bullet)
 
         if self.spaceship and not self.asteroids:
-            self.message = 'VICTORY :)'
+            self.message = "VICTORY"
 
     def draw(self):
         self.screen.blit(self.background, (0, 0))
@@ -137,9 +142,11 @@ class Game:
         for game_object in self.get_game_objects():
             game_object.draw(self.screen)
 
+        print_text_score(self.screen, self.score)
+
         if self.message:
             print_text(self.screen, self.message, self.font)
-            print_text_restart(self.screen, 'Press R to restart')
+            print_text_restart(self.screen, "Press R to restart")
 
         pygame.display.flip()
         self.clock.tick(60)
@@ -158,22 +165,3 @@ class Game:
                 self.game_logic()
                 self.draw()
             self.handle_input()
-
-
-# Game().game_loop()
-# def handle_input():
-#     for event in pygame.event.get():
-#         if event.type == pygame.QUIT:
-#             quit()
-#         if event.type == pygame.KEYDOWN:
-#             if event.key == pygame.K_r:
-#
-#
-#
-# if __name__ == '__main__':
-#     pygame.init()
-#     pygame.font.init()
-#     game = Game(pygame.display.set_mode((800, 600)))
-#     while True:
-
-

@@ -3,6 +3,7 @@ import pygame
 from pygame.color import Color
 
 from game import Game
+from utils import *
 
 FONT_GAME = 'assets/fonts/press_start.ttf'
 COLOR_WHITE = Color('white')
@@ -81,11 +82,10 @@ class Menu:
     def __score(self):
         self.screen_surface.fill(color=COLOR_BLACK)
         self.__draw_text('Back', 50, 30, font_size=15)
-        self.__draw_text('Carlos Martins\n'
-                         'Dayvson Silva\n'
-                         'Elikson Tavares\n'
-                         'Fábio Ono\n'
-                         'Gustavo Fadel', WIDTH / 2, HEIGHT / 2)
+        scores = get_scores()
+        
+        for index, score in enumerate(scores):
+            self.__draw_text('%02d' % score, WIDTH / 2, HEIGHT / 2 - 100 + 50 * index)
 
     def __play_game(self):
         self.game.game_loop()
@@ -106,7 +106,7 @@ class Menu:
     def show_menu_game_options(self):
         self.screen_surface.fill(color=COLOR_BLACK)
         self.__is_in_menu = True
-        self.__draw_game_name('ASTEROID')
+        self.__draw_game_name('ASTEROIDS')
         self.__draw_text('Play', WIDTH / 2, (HEIGHT / 2) - 70)
         self.__draw_text('Scores', WIDTH / 2, (HEIGHT / 2))
         self.__draw_text('Credits', WIDTH / 2, (HEIGHT / 2) + 70)
