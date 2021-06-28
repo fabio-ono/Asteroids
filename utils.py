@@ -51,7 +51,9 @@ def print_text_score(surface, score):
     rect.center = (98, 20)
     surface.blit(text_surface, rect)
 
-    text_surface = font.render("HIGH: %03d" % get_scores()[0], True, (255, 255, 255))
+    scores = get_scores()
+    highscore = scores[0] if scores else 0
+    text_surface = font.render("HIGH: %03d" % highscore, True, (255, 255, 255))
     rect = text_surface.get_rect()
     rect.center = (90, 60)
     surface.blit(text_surface, rect)
